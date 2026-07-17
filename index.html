@@ -85,7 +85,10 @@
   .hero-inner{
     max-width:1180px; margin:0 auto;
     position:relative; z-index:2;
+    display:grid; grid-template-columns:1.1fr 0.9fr;
+    gap:56px; align-items:start;
   }
+  .hero-text{min-width:0;}
   .eyebrow{
     display:inline-flex; align-items:center; gap:8px;
     font-size:13px; font-weight:500; color:var(--navy-mid);
@@ -120,6 +123,73 @@
     transition:background 0.2s;
   }
   .btn-secondary:hover{background:rgba(15,42,82,0.05);}
+
+  /* LISTING BOX — PG / Flats selector */
+  .listing-box{
+    background:var(--white);
+    border:1px solid var(--line);
+    border-radius:20px;
+    padding:8px;
+    box-shadow:0 30px 60px -30px rgba(15,42,82,0.28);
+    position:relative;
+  }
+  .listing-tabs{
+    display:flex; gap:6px; padding:8px; margin-bottom:4px;
+  }
+  .listing-tab{
+    flex:1; text-align:center; padding:13px 12px;
+    border-radius:12px; font-size:14.5px; font-weight:500;
+    color:var(--ink-soft); cursor:pointer; border:none;
+    background:transparent; font-family:'DM Sans', sans-serif;
+    transition:background 0.2s, color 0.2s;
+    display:flex; align-items:center; justify-content:center; gap:8px;
+  }
+  .listing-tab .tab-icon{font-size:16px;}
+  .listing-tab.active{
+    background:var(--navy); color:var(--white);
+  }
+  .listing-panel{padding:14px 22px 26px;}
+  .listing-panel{display:none;}
+  .listing-panel.active{display:block;}
+  .listing-heading{
+    font-family:'Space Grotesk', sans-serif; font-weight:700;
+    font-size:17px; color:var(--navy); margin-bottom:4px;
+  }
+  .listing-sub{font-size:13px; color:var(--ink-soft); margin-bottom:20px;}
+  .field-group{margin-bottom:14px;}
+  .field-label{
+    font-size:11.5px; font-weight:500; color:var(--ink-soft);
+    text-transform:uppercase; letter-spacing:0.5px; margin-bottom:7px; display:block;
+  }
+  .field-input, .field-select{
+    width:100%; padding:12px 14px; border-radius:10px;
+    border:1px solid var(--line); background:var(--bg);
+    font-family:'DM Sans', sans-serif; font-size:14px; color:var(--ink);
+    outline:none; transition:border-color 0.2s;
+  }
+  .field-input:focus, .field-select:focus{border-color:var(--navy-mid);}
+  .field-row{display:flex; gap:10px;}
+  .field-row .field-group{flex:1;}
+  .chip-row{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:18px;}
+  .chip{
+    padding:8px 15px; border-radius:20px; font-size:13px; font-weight:500;
+    border:1px solid var(--line); color:var(--ink-soft); cursor:pointer;
+    transition:all 0.2s; background:var(--bg);
+  }
+  .chip.selected{
+    background:rgba(200,150,42,0.12); border-color:var(--brass); color:#8a6416;
+  }
+  .listing-submit{
+    width:100%; background:var(--brass); color:var(--navy-deep);
+    border:none; padding:14px; border-radius:10px; font-weight:700;
+    font-size:14.5px; cursor:pointer; font-family:'Space Grotesk', sans-serif;
+    transition:background 0.2s; display:flex; align-items:center; justify-content:center; gap:8px;
+  }
+  .listing-submit:hover{background:var(--brass-light);}
+  .listing-footnote{
+    text-align:center; font-size:12px; color:var(--ink-soft);
+    margin-top:12px;
+  }
 
   /* Crosshair coordinate markers - signature element */
   .coord-marker{
@@ -270,6 +340,7 @@
 
   @media (max-width: 860px){
     .nav-links{display:none;}
+    .hero-inner{grid-template-columns:1fr; gap:36px;}
     .wing-grid{grid-template-columns:1fr;}
     .stats-inner{grid-template-columns:repeat(2,1fr);}
     .steps{grid-template-columns:1fr;}
@@ -298,15 +369,117 @@
   <div class="coord-marker m2"><span class="crosshair"></span>77.59°E</div>
   <div class="coord-marker m3"><span class="crosshair"></span>BLR</div>
   <div class="hero-inner">
-    <span class="eyebrow"><span class="x-dot">×</span> Student rentals, real returns</span>
-    <h1>Every room finds its student.<br>Every <span class="accent">property</span> finds its value.</h1>
-    <p class="lede">PropxReality connects verified student housing with verified investment opportunity — two wings, one address, built on trust.</p>
-    <div class="hero-ctas">
-      <a href="#living" class="btn-primary">Find a room →</a>
-      <a href="#realty" class="btn-secondary">List a property</a>
+    <div class="hero-text">
+      <span class="eyebrow"><span class="x-dot">×</span> Student rentals, real returns</span>
+      <h1>Every room finds its student.<br>Every <span class="accent">property</span> finds its value.</h1>
+      <p class="lede">PropxReality connects verified student housing with verified investment opportunity — two wings, one address, built on trust.</p>
+      <div class="hero-ctas">
+        <a href="#living" class="btn-primary">Find a room →</a>
+        <a href="#realty" class="btn-secondary">List a property</a>
+      </div>
+    </div>
+
+    <div class="listing-box">
+      <div class="listing-tabs">
+        <button class="listing-tab active" data-panel="pg-panel" onclick="switchListingTab(this)">
+          <span class="tab-icon">🏠</span> PG / Co-living
+        </button>
+        <button class="listing-tab" data-panel="flat-panel" onclick="switchListingTab(this)">
+          <span class="tab-icon">🏢</span> Flats for Rent
+        </button>
+      </div>
+
+      <div class="listing-panel active" id="pg-panel">
+        <div class="listing-heading">Find a verified PG</div>
+        <div class="listing-sub">Single, sharing or private rooms near your campus.</div>
+        <div class="field-group">
+          <label class="field-label">Location</label>
+          <input type="text" class="field-input" placeholder="e.g. Whitefield, Bengaluru">
+        </div>
+        <div class="field-row">
+          <div class="field-group">
+            <label class="field-label">Room type</label>
+            <select class="field-select">
+              <option>Single sharing</option>
+              <option>Double sharing</option>
+              <option>Triple sharing</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Budget / month</label>
+            <select class="field-select">
+              <option>Under ₹8,000</option>
+              <option>₹8,000 – ₹12,000</option>
+              <option>₹12,000 – ₹18,000</option>
+              <option>₹18,000+</option>
+            </select>
+          </div>
+        </div>
+        <div class="chip-row">
+          <span class="chip selected">Girls PG</span>
+          <span class="chip">Boys PG</span>
+          <span class="chip">Co-living</span>
+          <span class="chip">Meals incl.</span>
+        </div>
+        <button class="listing-submit">Search PG rooms →</button>
+        <div class="listing-footnote">120+ verified PGs listed near top campuses</div>
+      </div>
+
+      <div class="listing-panel" id="flat-panel">
+        <div class="listing-heading">Find a flat to rent</div>
+        <div class="listing-sub">1, 2 or 3 BHK — for students, families or working professionals.</div>
+        <div class="field-group">
+          <label class="field-label">Location</label>
+          <input type="text" class="field-input" placeholder="e.g. HSR Layout, Bengaluru">
+        </div>
+        <div class="field-row">
+          <div class="field-group">
+            <label class="field-label">Flat type</label>
+            <select class="field-select">
+              <option>1 BHK</option>
+              <option>2 BHK</option>
+              <option>3 BHK</option>
+              <option>4+ BHK</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Budget / month</label>
+            <select class="field-select">
+              <option>Under ₹15,000</option>
+              <option>₹15,000 – ₹25,000</option>
+              <option>₹25,000 – ₹40,000</option>
+              <option>₹40,000+</option>
+            </select>
+          </div>
+        </div>
+        <div class="chip-row">
+          <span class="chip selected">Furnished</span>
+          <span class="chip">Semi-furnished</span>
+          <span class="chip">Pet friendly</span>
+          <span class="chip">Parking</span>
+        </div>
+        <button class="listing-submit">Search flats →</button>
+        <div class="listing-footnote">Verified owners, zero brokerage listings</div>
+      </div>
     </div>
   </div>
 </section>
+
+<script>
+  function switchListingTab(btn){
+    var tabs = btn.parentElement.querySelectorAll('.listing-tab');
+    var panels = document.querySelectorAll('.listing-panel');
+    tabs.forEach(function(t){ t.classList.remove('active'); });
+    panels.forEach(function(p){ p.classList.remove('active'); });
+    btn.classList.add('active');
+    document.getElementById(btn.getAttribute('data-panel')).classList.add('active');
+  }
+  document.querySelectorAll('.chip').forEach(function(chip){
+    chip.addEventListener('click', function(){
+      chip.classList.toggle('selected');
+    });
+  });
+</script>
 
 <section class="stats">
   <div class="stats-inner">
@@ -384,7 +557,7 @@
     <h2>Room to rent. Property to sell. Let's talk.</h2>
     <p>We're building this early — reach out and be part of the first cities we launch in.</p>
     <div class="hero-ctas">
-      <a href="mailto:hello@propxreality.com" class="btn-primary">Email us →</a>
+      <a href="mailto:contact@propxreality.com" class="btn-primary">Email us →</a>
       <a href="#" class="btn-secondary">WhatsApp us</a>
     </div>
   </div>
